@@ -1,0 +1,1338 @@
+
+Test subset0_1 (init) - passed
+Test subset0_2 (init with existing repo) - passed
+Test subset0_3 (add with no previous init) - passed
+Test subset0_4 (add with non-existent file) - passed
+Test subset0_5 (add, commit, show) - passed
+Test subset0_6 (show) - passed
+Test subset0_7 (show errors) - passed
+Test subset0_8 (add, commit, no change, commit,) - passed
+Test subset1_9 (commit -a) - passed
+Test subset1_10 (add + commit -a) - passed
+Test subset1_11 (rm) - passed
+Test subset1_12 (rm) - passed
+Test subset1_13 (rm add) - failed (Incorrect output)
+Your program produced these 12 lines of output:
+$ legit.pl init
+Initialized empty legit repository in .legit
+$ touch a b
+$ legit.pl add a b
+$ legit.pl commit -m "first commit"
+Committed as commit 0
+$ rm a
+$ legit.pl commit -m "second commit"
+nothing to commit
+$ legit.pl add a
+legit.pl: error: can not open 'a'
+*** TEST STOPPED: unexpected output from legit.pl
+
+The correct 25 lines of output for this test were:
+$ legit.pl init
+Initialized empty legit repository in .legit
+$ touch a b
+$ legit.pl add a b
+$ legit.pl commit -m "first commit"
+Committed as commit 0
+$ rm a
+$ legit.pl commit -m "second commit"
+nothing to commit
+$ legit.pl add a
+$ legit.pl commit -m "second commit"
+Committed as commit 1
+$ legit.pl rm --cached b
+$ legit.pl commit -m "second commit"
+Committed as commit 2
+$ legit.pl rm b
+legit.pl: error: 'b' is not in the legit repository
+$ legit.pl add b
+$ legit.pl rm b
+legit.pl: error: 'b' has changes staged in the index
+$ legit.pl commit -m "third commit"
+Committed as commit 3
+$ legit.pl rm b
+$ legit.pl commit -m "fourth commit"
+Committed as commit 4
+
+The difference between your output(-) and the correct output(+) is:
+...
+  $ legit.pl add a
+- legit.pl: error: can not open 'a'
+- *** TEST STOPPED: unexpected output from legit.pl
++ $ legit.pl commit -m "second commit"
++ Committed as commit 1
++ $ legit.pl rm --cached b
++ $ legit.pl commit -m "second commit"
++ Committed as commit 2
++ $ legit.pl rm b
++ legit.pl: error: 'b' is not in the legit repository
++ $ legit.pl add b
++ $ legit.pl rm b
++ legit.pl: error: 'b' has changes staged in the index
++ $ legit.pl commit -m "third commit"
++ Committed as commit 3
++ $ legit.pl rm b
++ $ legit.pl commit -m "fourth commit"
++ Committed as commit 4
+Test subset1_14 (rm errors) - failed (Incorrect output)
+Your program produced these 20 lines of output:
+$ legit.pl init
+Initialized empty legit repository in .legit
+$ echo 1 >a
+$ echo 2 >b
+$ echo 3 >c
+$ legit.pl add a b c
+$ legit.pl commit -m "first commit"
+Committed as commit 0
+$ echo 4 >>a
+$ echo 5 >>b
+$ echo 6 >>c
+$ echo 7 >d
+$ echo 8 >e
+$ legit.pl add b c d
+$ echo 9 >b
+$ legit.pl rm a
+legit.pl: error: 'a' in repository is different to working file
+$ legit.pl rm b
+legit.pl: error: 'b' in repository is different to working file
+*** TEST STOPPED: incorrect output from legit.pl
+
+The correct 41 lines of output for this test were:
+$ legit.pl init
+Initialized empty legit repository in .legit
+$ echo 1 >a
+$ echo 2 >b
+$ echo 3 >c
+$ legit.pl add a b c
+$ legit.pl commit -m "first commit"
+Committed as commit 0
+$ echo 4 >>a
+$ echo 5 >>b
+$ echo 6 >>c
+$ echo 7 >d
+$ echo 8 >e
+$ legit.pl add b c d
+$ echo 9 >b
+$ legit.pl rm a
+legit.pl: error: 'a' in repository is different to working file
+$ legit.pl rm b
+legit.pl: error: 'b' in index is different to both working file and repository
+$ legit.pl rm c
+legit.pl: error: 'c' has changes staged in the index
+$ legit.pl rm d
+legit.pl: error: 'd' has changes staged in the index
+$ legit.pl rm e
+legit.pl: error: 'e' is not in the legit repository
+$ legit.pl rm --cached a
+$ legit.pl rm --cached b
+legit.pl: error: 'b' in index is different to both working file and repository
+$ legit.pl rm --cached c
+$ legit.pl rm --cached d
+$ legit.pl rm --cached e
+legit.pl: error: 'e' is not in the legit repository
+$ legit.pl rm --force a
+legit.pl: error: 'a' is not in the legit repository
+$ legit.pl rm --force b
+$ legit.pl rm --force c
+legit.pl: error: 'c' is not in the legit repository
+$ legit.pl rm --force d
+legit.pl: error: 'd' is not in the legit repository
+$ legit.pl rm --force e
+legit.pl: error: 'e' is not in the legit repository
+
+The difference between your output(-) and the correct output(+) is:
+...
+  $ legit.pl rm b
+- legit.pl: error: 'b' in repository is different to working file
+- *** TEST STOPPED: incorrect output from legit.pl
++ legit.pl: error: 'b' in index is different to both working file and repository
++ $ legit.pl rm c
++ legit.pl: error: 'c' has changes staged in the index
++ $ legit.pl rm d
++ legit.pl: error: 'd' has changes staged in the index
++ $ legit.pl rm e
++ legit.pl: error: 'e' is not in the legit repository
++ $ legit.pl rm --cached a
++ $ legit.pl rm --cached b
++ legit.pl: error: 'b' in index is different to both working file and repository
++ $ legit.pl rm --cached c
++ $ legit.pl rm --cached d
++ $ legit.pl rm --cached e
++ legit.pl: error: 'e' is not in the legit repository
++ $ legit.pl rm --force a
++ legit.pl: error: 'a' is not in the legit repository
++ $ legit.pl rm --force b
++ $ legit.pl rm --force c
++ legit.pl: error: 'c' is not in the legit repository
++ $ legit.pl rm --force d
++ legit.pl: error: 'd' is not in the legit repository
++ $ legit.pl rm --force e
++ legit.pl: error: 'e' is not in the legit repository
+Test subset1_15 (rm options) - failed (Incorrect output)
+Your program produced these 19 lines of output:
+$ legit.pl init
+Initialized empty legit repository in .legit
+$ echo 1 >a
+$ echo 2 >b
+$ echo 3 >c
+$ legit.pl add a b c
+$ legit.pl commit -m "first commit"
+Committed as commit 0
+$ echo 4 >>a
+$ echo 5 >>b
+$ echo 6 >>c
+$ echo 7 >d
+$ echo 8 >e
+$ legit.pl add b c d e
+$ echo 9 >b
+$ echo 0 >d
+$ legit.pl rm --cached a c
+file have been modified. try --force
+*** TEST STOPPED: unexpected output from legit.pl
+
+The correct 25 lines of output for this test were:
+$ legit.pl init
+Initialized empty legit repository in .legit
+$ echo 1 >a
+$ echo 2 >b
+$ echo 3 >c
+$ legit.pl add a b c
+$ legit.pl commit -m "first commit"
+Committed as commit 0
+$ echo 4 >>a
+$ echo 5 >>b
+$ echo 6 >>c
+$ echo 7 >d
+$ echo 8 >e
+$ legit.pl add b c d e
+$ echo 9 >b
+$ echo 0 >d
+$ legit.pl rm --cached a c
+$ legit.pl rm --force --cached b
+$ legit.pl rm --cached --force e
+$ legit.pl rm --force d
+$ legit.pl status
+a - untracked
+b - untracked
+c - untracked
+e - untracked
+
+The difference between your output(-) and the correct output(+) is:
+...
+  $ legit.pl rm --cached a c
+- file have been modified. try --force
+- *** TEST STOPPED: unexpected output from legit.pl
++ $ legit.pl rm --force --cached b
++ $ legit.pl rm --cached --force e
++ $ legit.pl rm --force d
++ $ legit.pl status
++ a - untracked
++ b - untracked
++ c - untracked
++ e - untracked
+Test subset1_16 (status) - failed (Incorrect output)
+Your program produced these 14 lines of output:
+$ legit.pl init
+Initialized empty legit repository in .legit
+$ touch a b c d e f g h
+$ legit.pl add a b c d e f
+$ legit.pl commit -m "first commit"
+Committed as commit 0
+$ echo hello >a
+$ echo hello >b
+$ echo hello >c
+$ legit.pl add a b
+$ echo world >a
+$ rm d
+$ legit.pl rm e
+*** TEST STOPPED: legit.pl incorrectly created these files: e
+
+The correct 23 lines of output for this test were:
+$ legit.pl init
+Initialized empty legit repository in .legit
+$ touch a b c d e f g h
+$ legit.pl add a b c d e f
+$ legit.pl commit -m "first commit"
+Committed as commit 0
+$ echo hello >a
+$ echo hello >b
+$ echo hello >c
+$ legit.pl add a b
+$ echo world >a
+$ rm d
+$ legit.pl rm e
+$ legit.pl add g
+$ legit.pl status
+a - file changed, different changes staged for commit
+b - file changed, changes staged for commit
+c - file changed, changes not staged for commit
+d - file deleted
+e - deleted
+f - same as repo
+g - added to index
+h - untracked
+
+The difference between your output(-) and the correct output(+) is:
+...
+  $ legit.pl rm e
+- *** TEST STOPPED: legit.pl incorrectly created these files: e
++ $ legit.pl add g
++ $ legit.pl status
++ a - file changed, different changes staged for commit
++ b - file changed, changes staged for commit
++ c - file changed, changes not staged for commit
++ d - file deleted
++ e - deleted
++ f - same as repo
++ g - added to index
++ h - untracked
+Test subset2_17 (branch) - failed (Incorrect output)
+Your program produced these 5 lines of output:
+$ legit.pl init
+Initialized empty legit repository in .legit
+$ legit.pl branch
+branch command not found!
+*** TEST STOPPED: incorrect output from legit.pl
+
+The correct 25 lines of output for this test were:
+$ legit.pl init
+Initialized empty legit repository in .legit
+$ legit.pl branch
+legit.pl: error: your repository does not have any commits yet
+$ touch a
+$ legit.pl add a
+$ legit.pl commit -m commit-0
+Committed as commit 0
+$ legit.pl branch branch1
+$ legit.pl branch branch2
+$ legit.pl branch master
+legit.pl: error: branch 'master' already exists
+$ legit.pl branch
+branch1
+branch2
+master
+$ legit.pl branch -d branch2
+Deleted branch 'branch2'
+$ legit.pl branch -d master
+legit.pl: error: can not delete branch 'master'
+$ legit.pl branch -d b1
+legit.pl: error: branch 'b1' does not exist
+$ legit.pl branch
+branch1
+master
+
+The difference between your output(-) and the correct output(+) is:
+...
+  $ legit.pl branch
+- branch command not found!
+- *** TEST STOPPED: incorrect output from legit.pl
++ legit.pl: error: your repository does not have any commits yet
++ $ touch a
++ $ legit.pl add a
++ $ legit.pl commit -m commit-0
++ Committed as commit 0
++ $ legit.pl branch branch1
++ $ legit.pl branch branch2
++ $ legit.pl branch master
++ legit.pl: error: branch 'master' already exists
++ $ legit.pl branch
++ branch1
++ branch2
++ master
++ $ legit.pl branch -d branch2
++ Deleted branch 'branch2'
++ $ legit.pl branch -d master
++ legit.pl: error: can not delete branch 'master'
++ $ legit.pl branch -d b1
++ legit.pl: error: branch 'b1' does not exist
++ $ legit.pl branch
++ branch1
++ master
+Test subset1_18 (rm add rm show) - failed (Incorrect output)
+Your program produced these 8 lines of output:
+$ legit.pl init
+Initialized empty legit repository in .legit
+$ echo hello >a
+$ legit.pl add a
+$ legit.pl commit -m commit-0
+Committed as commit 0
+$ legit.pl rm a
+*** TEST STOPPED: legit.pl incorrectly created these files: a
+
+The correct 35 lines of output for this test were:
+$ legit.pl init
+Initialized empty legit repository in .legit
+$ echo hello >a
+$ legit.pl add a
+$ legit.pl commit -m commit-0
+Committed as commit 0
+$ legit.pl rm a
+$ legit.pl status
+a - deleted
+$ legit.pl commit -m commit-1
+Committed as commit 1
+$ legit.pl status
+$ echo world >a
+$ legit.pl status
+a - untracked
+$ legit.pl commit -m commit-2
+nothing to commit
+$ legit.pl add a
+$ legit.pl commit -m commit-2
+Committed as commit 2
+$ legit.pl rm a
+$ legit.pl commit -m commit-3
+Committed as commit 3
+$ legit.pl show :a
+legit.pl: error: 'a' not found in index
+$ legit.pl show 0:a
+hello
+$ legit.pl show 1:a
+legit.pl: error: 'a' not found in commit 1
+$ legit.pl show 2:a
+world
+$ legit.pl show 3:a
+legit.pl: error: 'a' not found in commit 3
+$ legit.pl show 4:a
+legit.pl: error: unknown commit '4'
+
+The difference between your output(-) and the correct output(+) is:
+...
+  $ legit.pl rm a
+- *** TEST STOPPED: legit.pl incorrectly created these files: a
++ $ legit.pl status
++ a - deleted
++ $ legit.pl commit -m commit-1
++ Committed as commit 1
++ $ legit.pl status
++ $ echo world >a
++ $ legit.pl status
++ a - untracked
++ $ legit.pl commit -m commit-2
++ nothing to commit
++ $ legit.pl add a
++ $ legit.pl commit -m commit-2
++ Committed as commit 2
++ $ legit.pl rm a
++ $ legit.pl commit -m commit-3
++ Committed as commit 3
++ $ legit.pl show :a
++ legit.pl: error: 'a' not found in index
++ $ legit.pl show 0:a
++ hello
++ $ legit.pl show 1:a
++ legit.pl: error: 'a' not found in commit 1
++ $ legit.pl show 2:a
++ world
++ $ legit.pl show 3:a
++ legit.pl: error: 'a' not found in commit 3
++ $ legit.pl show 4:a
++ legit.pl: error: unknown commit '4'
+Test subset2_19 (checkout) - failed (Incorrect output)
+Your program produced these 9 lines of output:
+$ legit.pl init
+Initialized empty legit repository in .legit
+$ touch a
+$ legit.pl add a
+$ legit.pl commit -m commit-0
+Committed as commit 0
+$ legit.pl branch b1
+branch command not found!
+*** TEST STOPPED: unexpected output from legit.pl
+
+The correct 32 lines of output for this test were:
+$ legit.pl init
+Initialized empty legit repository in .legit
+$ touch a
+$ legit.pl add a
+$ legit.pl commit -m commit-0
+Committed as commit 0
+$ legit.pl branch b1
+$ legit.pl checkout b1
+Switched to branch 'b1'
+$ touch b
+$ legit.pl add b
+$ legit.pl commit -m commit-1
+Committed as commit 1
+$ legit.pl checkout master
+Switched to branch 'master'
+$ legit.pl branch b2
+$ legit.pl checkout b2
+Switched to branch 'b2'
+$ touch c
+$ legit.pl add c
+$ legit.pl commit -m commit-2
+Committed as commit 2
+$ legit.pl branch
+b1
+b2
+master
+$ legit.pl checkout b1
+Switched to branch 'b1'
+$ legit.pl checkout master
+Switched to branch 'master'
+$ legit.pl checkout non-existent-branch
+legit.pl: error: unknown branch 'non-existent-branch'
+
+The difference between your output(-) and the correct output(+) is:
+...
+  $ legit.pl branch b1
+- branch command not found!
+- *** TEST STOPPED: unexpected output from legit.pl
++ $ legit.pl checkout b1
++ Switched to branch 'b1'
++ $ touch b
++ $ legit.pl add b
++ $ legit.pl commit -m commit-1
++ Committed as commit 1
++ $ legit.pl checkout master
++ Switched to branch 'master'
++ $ legit.pl branch b2
++ $ legit.pl checkout b2
++ Switched to branch 'b2'
++ $ touch c
++ $ legit.pl add c
++ $ legit.pl commit -m commit-2
++ Committed as commit 2
++ $ legit.pl branch
++ b1
++ b2
++ master
++ $ legit.pl checkout b1
++ Switched to branch 'b1'
++ $ legit.pl checkout master
++ Switched to branch 'master'
++ $ legit.pl checkout non-existent-branch
++ legit.pl: error: unknown branch 'non-existent-branch'
+Test subset2_20 (branch commit checkout) - failed (Incorrect output)
+Your program produced these 9 lines of output:
+$ legit.pl init
+Initialized empty legit repository in .legit
+$ echo line 1 >a
+$ legit.pl add a
+$ legit.pl commit -m commit-0
+Committed as commit 0
+$ legit.pl branch b1
+branch command not found!
+*** TEST STOPPED: unexpected output from legit.pl
+
+The correct 28 lines of output for this test were:
+$ legit.pl init
+Initialized empty legit repository in .legit
+$ echo line 1 >a
+$ legit.pl add a
+$ legit.pl commit -m commit-0
+Committed as commit 0
+$ legit.pl branch b1
+$ echo line 2 >>a
+$ echo hello >b
+$ legit.pl add a b
+$ legit.pl commit -m commit-1
+Committed as commit 1
+$ legit.pl checkout b1
+Switched to branch 'b1'
+$ echo line 3 >>a
+$ echo world >b
+$ touch c
+$ legit.pl add a b c
+$ legit.pl commit -m commit-2
+Committed as commit 2
+$ legit.pl checkout master
+Switched to branch 'master'
+$ legit.pl checkout b1
+Switched to branch 'b1'
+$ legit.pl checkout master
+Switched to branch 'master'
+$ legit.pl checkout b1
+Switched to branch 'b1'
+
+The difference between your output(-) and the correct output(+) is:
+...
+  $ legit.pl branch b1
+- branch command not found!
+- *** TEST STOPPED: unexpected output from legit.pl
++ $ echo line 2 >>a
++ $ echo hello >b
++ $ legit.pl add a b
++ $ legit.pl commit -m commit-1
++ Committed as commit 1
++ $ legit.pl checkout b1
++ Switched to branch 'b1'
++ $ echo line 3 >>a
++ $ echo world >b
++ $ touch c
++ $ legit.pl add a b c
++ $ legit.pl commit -m commit-2
++ Committed as commit 2
++ $ legit.pl checkout master
++ Switched to branch 'master'
++ $ legit.pl checkout b1
++ Switched to branch 'b1'
++ $ legit.pl checkout master
++ Switched to branch 'master'
++ $ legit.pl checkout b1
++ Switched to branch 'b1'
+Test subset2_21 (checkout modified file) - failed (Incorrect output)
+Your program produced these 9 lines of output:
+$ legit.pl init
+Initialized empty legit repository in .legit
+$ echo hello >a
+$ legit.pl add a
+$ legit.pl commit -m commit-A
+Committed as commit 0
+$ legit.pl branch b1
+branch command not found!
+*** TEST STOPPED: unexpected output from legit.pl
+
+The correct 33 lines of output for this test were:
+$ legit.pl init
+Initialized empty legit repository in .legit
+$ echo hello >a
+$ legit.pl add a
+$ legit.pl commit -m commit-A
+Committed as commit 0
+$ legit.pl branch b1
+$ echo world >>a
+$ legit.pl checkout b1
+Switched to branch 'b1'
+$ legit.pl status
+a - file changed, changes not staged for commit
+$ legit.pl checkout master
+Switched to branch 'master'
+$ legit.pl add a
+$ legit.pl status
+a - file changed, changes staged for commit
+$ legit.pl checkout b1
+Switched to branch 'b1'
+$ legit.pl status
+a - file changed, changes staged for commit
+$ legit.pl checkout master
+Switched to branch 'master'
+$ legit.pl commit -a -m commit-B
+Committed as commit 1
+$ legit.pl checkout b1
+Switched to branch 'b1'
+$ legit.pl status
+a - same as repo
+$ legit.pl checkout master
+Switched to branch 'master'
+$ legit.pl status
+a - same as repo
+
+The difference between your output(-) and the correct output(+) is:
+...
+  $ legit.pl branch b1
+- branch command not found!
+- *** TEST STOPPED: unexpected output from legit.pl
++ $ echo world >>a
++ $ legit.pl checkout b1
++ Switched to branch 'b1'
++ $ legit.pl status
++ a - file changed, changes not staged for commit
++ $ legit.pl checkout master
++ Switched to branch 'master'
++ $ legit.pl add a
++ $ legit.pl status
++ a - file changed, changes staged for commit
++ $ legit.pl checkout b1
++ Switched to branch 'b1'
++ $ legit.pl status
++ a - file changed, changes staged for commit
++ $ legit.pl checkout master
++ Switched to branch 'master'
++ $ legit.pl commit -a -m commit-B
++ Committed as commit 1
++ $ legit.pl checkout b1
++ Switched to branch 'b1'
++ $ legit.pl status
++ a - same as repo
++ $ legit.pl checkout master
++ Switched to branch 'master'
++ $ legit.pl status
++ a - same as repo
+Test subset2_22 (checkout rm) - failed (Incorrect output)
+Your program produced these 9 lines of output:
+$ legit.pl init
+Initialized empty legit repository in .legit
+$ touch a b c
+$ legit.pl add a
+$ legit.pl commit -m commit-A
+Committed as commit 0
+$ legit.pl branch b1
+branch command not found!
+*** TEST STOPPED: unexpected output from legit.pl
+
+The correct 43 lines of output for this test were:
+$ legit.pl init
+Initialized empty legit repository in .legit
+$ touch a b c
+$ legit.pl add a
+$ legit.pl commit -m commit-A
+Committed as commit 0
+$ legit.pl branch b1
+$ legit.pl checkout b1
+Switched to branch 'b1'
+$ touch d e
+$ legit.pl rm a b
+legit.pl: error: 'b' is not in the legit repository
+$ legit.pl commit -m commit-B
+nothing to commit
+$ legit.pl checkout master
+Switched to branch 'master'
+$ legit.pl branch b2
+$ legit.pl checkout b2
+Switched to branch 'b2'
+$ touch f g
+$ legit.pl rm b c
+legit.pl: error: 'b' is not in the legit repository
+$ legit.pl add f g
+$ legit.pl commit -m commit-C
+Committed as commit 1
+$ legit.pl branch
+b1
+b2
+master
+$ legit.pl checkout b1
+Switched to branch 'b1'
+$ legit.pl checkout master
+Switched to branch 'master'
+$ legit.pl checkout b2
+Switched to branch 'b2'
+$ legit.pl checkout b1
+Switched to branch 'b1'
+$ legit.pl checkout master
+Switched to branch 'master'
+$ legit.pl checkout b2
+Switched to branch 'b2'
+$ legit.pl checkout b1
+Switched to branch 'b1'
+
+The difference between your output(-) and the correct output(+) is:
+...
+  $ legit.pl branch b1
+- branch command not found!
+- *** TEST STOPPED: unexpected output from legit.pl
++ $ legit.pl checkout b1
++ Switched to branch 'b1'
++ $ touch d e
++ $ legit.pl rm a b
++ legit.pl: error: 'b' is not in the legit repository
++ $ legit.pl commit -m commit-B
++ nothing to commit
++ $ legit.pl checkout master
++ Switched to branch 'master'
++ $ legit.pl branch b2
++ $ legit.pl checkout b2
++ Switched to branch 'b2'
++ $ touch f g
++ $ legit.pl rm b c
++ legit.pl: error: 'b' is not in the legit repository
++ $ legit.pl add f g
++ $ legit.pl commit -m commit-C
++ Committed as commit 1
++ $ legit.pl branch
++ b1
++ b2
++ master
++ $ legit.pl checkout b1
++ Switched to branch 'b1'
++ $ legit.pl checkout master
++ Switched to branch 'master'
++ $ legit.pl checkout b2
++ Switched to branch 'b2'
++ $ legit.pl checkout b1
++ Switched to branch 'b1'
++ $ legit.pl checkout master
++ Switched to branch 'master'
++ $ legit.pl checkout b2
++ Switched to branch 'b2'
++ $ legit.pl checkout b1
++ Switched to branch 'b1'
+Test subset2_23 (delete branch with unmerged work) - failed (Incorrect output)
+Your program produced these 9 lines of output:
+$ legit.pl init
+Initialized empty legit repository in .legit
+$ echo hello >a
+$ legit.pl add a
+$ legit.pl commit -m commit-A
+Committed as commit 0
+$ legit.pl branch branch1
+branch command not found!
+*** TEST STOPPED: unexpected output from legit.pl
+
+The correct 23 lines of output for this test were:
+$ legit.pl init
+Initialized empty legit repository in .legit
+$ echo hello >a
+$ legit.pl add a
+$ legit.pl commit -m commit-A
+Committed as commit 0
+$ legit.pl branch branch1
+$ legit.pl checkout branch1
+Switched to branch 'branch1'
+$ echo world >b
+$ legit.pl add b
+$ legit.pl commit -a -m commit-B
+Committed as commit 1
+$ legit.pl checkout master
+Switched to branch 'master'
+$ legit.pl branch -d branch1
+legit.pl: error: branch 'branch1' has unmerged changes
+$ legit.pl merge -m merge-message branch1
+Fast-forward: no commit created
+$ legit.pl branch -d branch1
+Deleted branch 'branch1'
+$ legit.pl branch
+master
+
+The difference between your output(-) and the correct output(+) is:
+...
+  $ legit.pl branch branch1
+- branch command not found!
+- *** TEST STOPPED: unexpected output from legit.pl
++ $ legit.pl checkout branch1
++ Switched to branch 'branch1'
++ $ echo world >b
++ $ legit.pl add b
++ $ legit.pl commit -a -m commit-B
++ Committed as commit 1
++ $ legit.pl checkout master
++ Switched to branch 'master'
++ $ legit.pl branch -d branch1
++ legit.pl: error: branch 'branch1' has unmerged changes
++ $ legit.pl merge -m merge-message branch1
++ Fast-forward: no commit created
++ $ legit.pl branch -d branch1
++ Deleted branch 'branch1'
++ $ legit.pl branch
++ master
+Test subset2_24 (checkout with work that would be over-written) - failed (Incorrect output)
+Your program produced these 9 lines of output:
+$ legit.pl init
+Initialized empty legit repository in .legit
+$ echo hello >a
+$ legit.pl add a
+$ legit.pl commit -m commit-A
+Committed as commit 0
+$ legit.pl branch branchA
+branch command not found!
+*** TEST STOPPED: unexpected output from legit.pl
+
+The correct 22 lines of output for this test were:
+$ legit.pl init
+Initialized empty legit repository in .legit
+$ echo hello >a
+$ legit.pl add a
+$ legit.pl commit -m commit-A
+Committed as commit 0
+$ legit.pl branch branchA
+$ echo world >b
+$ legit.pl add b
+$ legit.pl commit -m commit-B
+Committed as commit 1
+$ legit.pl checkout branchA
+Switched to branch 'branchA'
+$ echo new contents >b
+$ legit.pl checkout master
+legit.pl: error: Your changes to the following files would be overwritten by checkout:
+b
+$ legit.pl add b
+$ legit.pl commit -m commit-C
+Committed as commit 2
+$ legit.pl checkout master
+Switched to branch 'master'
+
+The difference between your output(-) and the correct output(+) is:
+...
+  $ legit.pl branch branchA
+- branch command not found!
+- *** TEST STOPPED: unexpected output from legit.pl
++ $ echo world >b
++ $ legit.pl add b
++ $ legit.pl commit -m commit-B
++ Committed as commit 1
++ $ legit.pl checkout branchA
++ Switched to branch 'branchA'
++ $ echo new contents >b
++ $ legit.pl checkout master
++ legit.pl: error: Your changes to the following files would be overwritten by checkout:
++ b
++ $ legit.pl add b
++ $ legit.pl commit -m commit-C
++ Committed as commit 2
++ $ legit.pl checkout master
++ Switched to branch 'master'
+Test subset2_25 (successful merge) - failed (Incorrect output)
+Your program produced these 9 lines of output:
+$ legit.pl init
+Initialized empty legit repository in .legit
+$ seq 1 7 >7.txt
+$ legit.pl add 7.txt
+$ legit.pl commit -m commit-0
+Committed as commit 0
+$ legit.pl branch b1
+branch command not found!
+*** TEST STOPPED: unexpected output from legit.pl
+
+The correct 27 lines of output for this test were:
+$ legit.pl init
+Initialized empty legit repository in .legit
+$ seq 1 7 >7.txt
+$ legit.pl add 7.txt
+$ legit.pl commit -m commit-0
+Committed as commit 0
+$ legit.pl branch b1
+$ legit.pl checkout b1
+Switched to branch 'b1'
+$ perl -pi -e s/2/42/ 7.txt
+$ legit.pl commit -a -m commit-1
+Committed as commit 1
+$ legit.pl checkout master
+Switched to branch 'master'
+$ perl -pi -e s/5/24/ 7.txt
+$ legit.pl commit -a -m commit-2
+Committed as commit 2
+$ legit.pl merge -m merge-message b1
+Auto-merging 7.txt
+Committed as commit 3
+$ legit.pl log
+3 merge-message
+2 commit-2
+1 commit-1
+0 commit-0
+$ legit.pl status
+7.txt - same as repo
+
+The difference between your output(-) and the correct output(+) is:
+...
+  $ legit.pl branch b1
+- branch command not found!
+- *** TEST STOPPED: unexpected output from legit.pl
++ $ legit.pl checkout b1
++ Switched to branch 'b1'
++ $ perl -pi -e s/2/42/ 7.txt
++ $ legit.pl commit -a -m commit-1
++ Committed as commit 1
++ $ legit.pl checkout master
++ Switched to branch 'master'
++ $ perl -pi -e s/5/24/ 7.txt
++ $ legit.pl commit -a -m commit-2
++ Committed as commit 2
++ $ legit.pl merge -m merge-message b1
++ Auto-merging 7.txt
++ Committed as commit 3
++ $ legit.pl log
++ 3 merge-message
++ 2 commit-2
++ 1 commit-1
++ 0 commit-0
++ $ legit.pl status
++ 7.txt - same as repo
+Test subset2_26 (successful merge - multiple files) - failed (Incorrect output)
+Your program produced these 12 lines of output:
+$ legit.pl init
+Initialized empty legit repository in .legit
+$ seq -f "line %.0f" 1 7 >a
+$ seq -f "line %.0f" 1 7 >b
+$ seq -f "line %.0f" 1 7 >c
+$ seq -f "line %.0f" 1 7 >d
+$ legit.pl add a b c d
+$ legit.pl commit -m commit-0
+Committed as commit 0
+$ legit.pl branch b1
+branch command not found!
+*** TEST STOPPED: unexpected output from legit.pl
+
+The correct 48 lines of output for this test were:
+$ legit.pl init
+Initialized empty legit repository in .legit
+$ seq -f "line %.0f" 1 7 >a
+$ seq -f "line %.0f" 1 7 >b
+$ seq -f "line %.0f" 1 7 >c
+$ seq -f "line %.0f" 1 7 >d
+$ legit.pl add a b c d
+$ legit.pl commit -m commit-0
+Committed as commit 0
+$ legit.pl branch b1
+$ legit.pl checkout b1
+Switched to branch 'b1'
+$ seq -f "line %.0f" 0 7 >a
+$ seq -f "line %.0f" 1 8 >b
+$ seq -f "line %.0f" 0 8 >c
+$ sed -i 4d d
+$ seq -f "line %.0f" 1 7 >e
+$ legit.pl add e
+$ legit.pl commit -a -m commit-1
+Committed as commit 1
+$ legit.pl checkout master
+Switched to branch 'master'
+$ seq -f "line %.0f" 1 8 >a
+$ seq -f "line %.0f" 0 7 >b
+$ sed -i 4d c
+$ seq -f "line %.0f" 0 8 >d
+$ seq -f "line %.0f" 1 7 >f
+$ legit.pl add f
+$ legit.pl commit -a -m commit-2
+Committed as commit 2
+$ legit.pl merge -m merge1 b1
+Auto-merging a
+Auto-merging b
+Auto-merging c
+Auto-merging d
+Committed as commit 3
+$ legit.pl log
+3 merge1
+2 commit-2
+1 commit-1
+0 commit-0
+$ legit.pl status
+a - same as repo
+b - same as repo
+c - same as repo
+d - same as repo
+e - same as repo
+f - same as repo
+
+The difference between your output(-) and the correct output(+) is:
+...
+  $ legit.pl branch b1
+- branch command not found!
+- *** TEST STOPPED: unexpected output from legit.pl
++ $ legit.pl checkout b1
++ Switched to branch 'b1'
++ $ seq -f "line %.0f" 0 7 >a
++ $ seq -f "line %.0f" 1 8 >b
++ $ seq -f "line %.0f" 0 8 >c
++ $ sed -i 4d d
++ $ seq -f "line %.0f" 1 7 >e
++ $ legit.pl add e
++ $ legit.pl commit -a -m commit-1
++ Committed as commit 1
++ $ legit.pl checkout master
++ Switched to branch 'master'
++ $ seq -f "line %.0f" 1 8 >a
++ $ seq -f "line %.0f" 0 7 >b
++ $ sed -i 4d c
++ $ seq -f "line %.0f" 0 8 >d
++ $ seq -f "line %.0f" 1 7 >f
++ $ legit.pl add f
++ $ legit.pl commit -a -m commit-2
++ Committed as commit 2
++ $ legit.pl merge -m merge1 b1
++ Auto-merging a
++ Auto-merging b
++ Auto-merging c
++ Auto-merging d
++ Committed as commit 3
++ $ legit.pl log
++ 3 merge1
++ 2 commit-2
++ 1 commit-1
++ 0 commit-0
++ $ legit.pl status
++ a - same as repo
++ b - same as repo
++ c - same as repo
++ d - same as repo
++ e - same as repo
++ f - same as repo
+Test subset2_27 (merge conflict) - failed (Incorrect output)
+Your program produced these 9 lines of output:
+$ legit.pl init
+Initialized empty legit repository in .legit
+$ seq 1 7 >7.txt
+$ legit.pl add 7.txt
+$ legit.pl commit -m commit-0
+Committed as commit 0
+$ legit.pl branch b1
+branch command not found!
+*** TEST STOPPED: unexpected output from legit.pl
+
+The correct 25 lines of output for this test were:
+$ legit.pl init
+Initialized empty legit repository in .legit
+$ seq 1 7 >7.txt
+$ legit.pl add 7.txt
+$ legit.pl commit -m commit-0
+Committed as commit 0
+$ legit.pl branch b1
+$ legit.pl checkout b1
+Switched to branch 'b1'
+$ perl -pi -e s/2/42/ 7.txt
+$ legit.pl commit -a -m commit-1
+Committed as commit 1
+$ legit.pl checkout master
+Switched to branch 'master'
+$ perl -pi -e s/2/24/ 7.txt
+$ legit.pl commit -a -m commit-2
+Committed as commit 2
+$ legit.pl merge -m merge-message b1
+legit.pl: error: These files can not be merged:
+7.txt
+$ legit.pl log
+2 commit-2
+0 commit-0
+$ legit.pl status
+7.txt - same as repo
+
+The difference between your output(-) and the correct output(+) is:
+...
+  $ legit.pl branch b1
+- branch command not found!
+- *** TEST STOPPED: unexpected output from legit.pl
++ $ legit.pl checkout b1
++ Switched to branch 'b1'
++ $ perl -pi -e s/2/42/ 7.txt
++ $ legit.pl commit -a -m commit-1
++ Committed as commit 1
++ $ legit.pl checkout master
++ Switched to branch 'master'
++ $ perl -pi -e s/2/24/ 7.txt
++ $ legit.pl commit -a -m commit-2
++ Committed as commit 2
++ $ legit.pl merge -m merge-message b1
++ legit.pl: error: These files can not be merged:
++ 7.txt
++ $ legit.pl log
++ 2 commit-2
++ 0 commit-0
++ $ legit.pl status
++ 7.txt - same as repo
+Test subset2_28 (merge errors) - failed (Incorrect output)
+Your program produced these 9 lines of output:
+$ legit.pl init
+Initialized empty legit repository in .legit
+$ seq 1 7 >7.txt
+$ legit.pl add 7.txt
+$ legit.pl commit -m commit-0
+Committed as commit 0
+$ legit.pl branch b1
+branch command not found!
+*** TEST STOPPED: unexpected output from legit.pl
+
+The correct 24 lines of output for this test were:
+$ legit.pl init
+Initialized empty legit repository in .legit
+$ seq 1 7 >7.txt
+$ legit.pl add 7.txt
+$ legit.pl commit -m commit-0
+Committed as commit 0
+$ legit.pl branch b1
+$ legit.pl checkout b1
+Switched to branch 'b1'
+$ perl -pi -e s/2/42/ 7.txt
+$ legit.pl commit -a -m commit-1
+Committed as commit 1
+$ legit.pl checkout master
+Switched to branch 'master'
+$ perl -pi -e s/5/24/ 7.txt
+$ legit.pl commit -a -m commit-2
+Committed as commit 2
+$ legit.pl merge b1
+legit.pl: error: empty commit message
+$ legit.pl merge -m message non-existent-branch
+legit.pl: error: unknown branch 'non-existent-branch'
+$ legit.pl merge b1 -m message
+Auto-merging 7.txt
+Committed as commit 3
+
+The difference between your output(-) and the correct output(+) is:
+...
+  $ legit.pl branch b1
+- branch command not found!
+- *** TEST STOPPED: unexpected output from legit.pl
++ $ legit.pl checkout b1
++ Switched to branch 'b1'
++ $ perl -pi -e s/2/42/ 7.txt
++ $ legit.pl commit -a -m commit-1
++ Committed as commit 1
++ $ legit.pl checkout master
++ Switched to branch 'master'
++ $ perl -pi -e s/5/24/ 7.txt
++ $ legit.pl commit -a -m commit-2
++ Committed as commit 2
++ $ legit.pl merge b1
++ legit.pl: error: empty commit message
++ $ legit.pl merge -m message non-existent-branch
++ legit.pl: error: unknown branch 'non-existent-branch'
++ $ legit.pl merge b1 -m message
++ Auto-merging 7.txt
++ Committed as commit 3
+Test subset2_29 (many branches) - failed (Incorrect output)
+Your program produced these 9 lines of output:
+$ legit.pl init
+Initialized empty legit repository in .legit
+$ echo 0 >level0
+$ legit.pl add level0
+$ legit.pl commit -m root
+Committed as commit 0
+$ legit.pl branch b0
+branch command not found!
+*** TEST STOPPED: unexpected output from legit.pl
+
+The correct 83 lines of output for this test were:
+$ legit.pl init
+Initialized empty legit repository in .legit
+$ echo 0 >level0
+$ legit.pl add level0
+$ legit.pl commit -m root
+Committed as commit 0
+$ legit.pl branch b0
+$ legit.pl branch b1
+$ legit.pl checkout b0
+Switched to branch 'b0'
+$ echo 0 >level1
+$ legit.pl add level1
+$ legit.pl commit -m 0
+Committed as commit 1
+$ legit.pl checkout b1
+Switched to branch 'b1'
+$ echo 1 >level1
+$ legit.pl add level1
+$ legit.pl commit -m 1
+Committed as commit 2
+$ legit.pl checkout b0
+Switched to branch 'b0'
+$ legit.pl branch b00
+$ legit.pl branch b01
+$ legit.pl checkout b1
+Switched to branch 'b1'
+$ legit.pl branch b10
+$ legit.pl branch b11
+$ legit.pl checkout b00
+Switched to branch 'b00'
+$ echo 00 >level2
+$ legit.pl add level2
+$ legit.pl commit -m 00
+Committed as commit 3
+$ legit.pl checkout b01
+Switched to branch 'b01'
+$ echo 01 >level2
+$ legit.pl add level2
+$ legit.pl commit -m 01
+Committed as commit 4
+$ legit.pl checkout b10
+Switched to branch 'b10'
+$ echo 10 >level2
+$ legit.pl add level2
+$ legit.pl commit -m 10
+Committed as commit 5
+$ legit.pl checkout b11
+Switched to branch 'b11'
+$ echo 11 >level2
+$ legit.pl add level2
+$ legit.pl commit -m 11
+Committed as commit 6
+$ legit.pl checkout master
+Switched to branch 'master'
+$ legit.pl log
+0 root
+$ legit.pl checkout b1
+Switched to branch 'b1'
+$ legit.pl log
+2 1
+0 root
+$ legit.pl checkout b01
+Switched to branch 'b01'
+$ legit.pl log
+4 01
+1 0
+0 root
+$ legit.pl checkout b11
+Switched to branch 'b11'
+$ legit.pl log
+6 11
+2 1
+0 root
+$ legit.pl checkout master
+Switched to branch 'master'
+$ legit.pl merge b0 -m merge0
+Fast-forward: no commit created
+$ legit.pl merge b00 -m merge00
+Fast-forward: no commit created
+$ legit.pl log
+3 00
+1 0
+0 root
+
+The difference between your output(-) and the correct output(+) is:
+...
+  $ legit.pl branch b0
+- branch command not found!
+- *** TEST STOPPED: unexpected output from legit.pl
++ $ legit.pl branch b1
++ $ legit.pl checkout b0
++ Switched to branch 'b0'
++ $ echo 0 >level1
++ $ legit.pl add level1
++ $ legit.pl commit -m 0
++ Committed as commit 1
++ $ legit.pl checkout b1
++ Switched to branch 'b1'
++ $ echo 1 >level1
++ $ legit.pl add level1
++ $ legit.pl commit -m 1
++ Committed as commit 2
++ $ legit.pl checkout b0
++ Switched to branch 'b0'
++ $ legit.pl branch b00
++ $ legit.pl branch b01
++ $ legit.pl checkout b1
++ Switched to branch 'b1'
++ $ legit.pl branch b10
++ $ legit.pl branch b11
++ $ legit.pl checkout b00
++ Switched to branch 'b00'
++ $ echo 00 >level2
++ $ legit.pl add level2
++ $ legit.pl commit -m 00
++ Committed as commit 3
++ $ legit.pl checkout b01
++ Switched to branch 'b01'
++ $ echo 01 >level2
++ $ legit.pl add level2
++ $ legit.pl commit -m 01
++ Committed as commit 4
++ $ legit.pl checkout b10
++ Switched to branch 'b10'
++ $ echo 10 >level2
++ $ legit.pl add level2
++ $ legit.pl commit -m 10
++ Committed as commit 5
++ $ legit.pl checkout b11
++ Switched to branch 'b11'
++ $ echo 11 >level2
++ $ legit.pl add level2
++ $ legit.pl commit -m 11
++ Committed as commit 6
++ $ legit.pl checkout master
++ Switched to branch 'master'
++ $ legit.pl log
++ 0 root
++ $ legit.pl checkout b1
++ Switched to branch 'b1'
++ $ legit.pl log
++ 2 1
++ 0 root
++ $ legit.pl checkout b01
++ Switched to branch 'b01'
++ $ legit.pl log
++ 4 01
++ 1 0
++ 0 root
++ $ legit.pl checkout b11
++ Switched to branch 'b11'
++ $ legit.pl log
++ 6 11
++ 2 1
++ 0 root
++ $ legit.pl checkout master
++ Switched to branch 'master'
++ $ legit.pl merge b0 -m merge0
++ Fast-forward: no commit created
++ $ legit.pl merge b00 -m merge00
++ Fast-forward: no commit created
++ $ legit.pl log
++ 3 00
++ 1 0
++ 0 root
+12 tests passed 17 tests failed

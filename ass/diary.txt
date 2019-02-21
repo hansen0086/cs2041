@@ -1,0 +1,10 @@
+Date	     Start	    Stop	     Activity	       Comments
+7/09/18     16:00      16:00         reading            try to understand what git is 
+8/09/18     19:00      22:00         coding             finished the init() and add(), starting on the commit()
+15/09/18    14:00      17:00         coding             debugg subset 0
+30/09/18    15:00      18:00         coding             try to implement subset 1 
+0110/18     13:00      16:00         coding             part of subset1 
+02/09/18    19:00      21:00         coding             start focusing on the tests
+03/09/18    15:00      18:00         coding             finished the tests
+
+
